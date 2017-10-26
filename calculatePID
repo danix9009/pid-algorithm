@@ -1,3 +1,6 @@
+/*
+* calculate the PID value function
+*/
 private final void calculatePID() {
 
     double kProportional = this.getProportionalConstant();
@@ -25,6 +28,7 @@ private final void calculatePID() {
       error = 0.0D;
       syncEffectiveLoad(error);
       if (this.getDirection()) {
+        //  this.kPkIconst=this.Kp*this.Ki / 60.0D;
         this.errorSum = -(error / this.kPkIconst);
       } else {
         this.errorSum = error / this.kPkIconst;
@@ -33,7 +37,7 @@ private final void calculatePID() {
       this.lastExecuteTime = 0L;
 
     } else if(!fault){
-      error = this.getSetPoint().getValue() - this.getAverageIn().getValue();
+      error = this.getSetPoint().getValue() - this.getInPoint().getValue();
       double proportionalGain;
       if(kIntegral != 0.0D){
         proportionalGain = deltaSecs*error;
@@ -73,6 +77,7 @@ private final void calculatePID() {
           pv = minimumOutput;
         }
         
+        // synchronize the result value
         sync(pv);
         
         this.lastExecuteTime = now;
@@ -80,4 +85,10 @@ private final void calculatePID() {
     }
   }
   
-  
+    private long lastExecuteTime;
+    private double kPkIconst;
+    private double errorSum=0.0D;
+    private double lastError = 0.0D;
+    private double maximumOutput = 100.0D;
+    private double minimumOutput = 0.0D;
+      
